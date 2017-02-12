@@ -1,3 +1,5 @@
 'use strict'
 
-console.log(process.env.PORT ? 'success' : 'failure')
+const config = require('./server/config')
+
+console.log(config.serverUrl ? 'success' : 'failure')
