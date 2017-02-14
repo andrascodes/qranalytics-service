@@ -3,8 +3,7 @@
 const config = {
     // Secret key for JWT signing and encryption
     jwtPassword: 'qwerty098',
-    cryptoPassword: 'abc123!@#!',
-    apiKeyPassword: '123abc!@#!'
+    cryptoPassword: 'abc123!@#!'
 }
 
 // Check the environment

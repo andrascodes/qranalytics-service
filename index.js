@@ -2,10 +2,16 @@
 
 const config = require('./server/config')
 const app = require('./server')
+const db = require('./server/models')
 
 // process.env.PORT lets the port to be set by Heroku
 const PORT = process.env.PORT
 app.set('port', PORT)
 
-const server = app.listen(app.get('port'), () =>
-  console.log(`Express app is listening at \n${config.serverUrl}`))
+//{force: true}
+db.sequelize.sync({force: true}).then( () => {
+	// START SERVER
+	const server = app.listen(app.get('port'), () =>
+    console.log(`Express app is listening at \n${config.serverUrl}`))
+})
+
