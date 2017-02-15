@@ -16,6 +16,10 @@
     "url": "https://github.com/andrewszucs/qranalytics-service/issues"
   },
   "homepage": "https://github.com/andrewszucs/qranalytics-service#readme",
+  "engines": {
+    "node": "7.0.0",
+    "npm": "3.10.8"
+  },
   "dependencies": {
     "basic-auth": "^1.1.0",
     "bcrypt": "^1.0.2",

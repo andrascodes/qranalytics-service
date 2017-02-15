@@ -11,7 +11,7 @@ const env = process.env.NODE_ENV || 'development';
 
 // Set Database connection URL
 if(env === 'production') {
-    config.databaseUrl = process.env.HEROKU_DATABASE_URL;
+    config.databaseUrl = process.env.DATABASE_URL;
     config.serverUrl = `${process.env.HEROKU_SERVER_URL}:${process.env.PORT}/`;
 }
 else {
