@@ -8,25 +8,33 @@ module.exports = function Message(sequelize, DataTypes) {
     //   type: DataTypes.UUID,
     // },
 
-    // participantPSID: DataTypes.STRING,
+    // Should have a userId
 
-    // type: DataTypes.STRING,
+    participant: DataTypes.STRING,
 
-    // timestamp: DataTypes.DATE,
+    type: DataTypes.STRING,
 
-    // direction: DataTypes.STRING,
+    direction: DataTypes.STRING,
 
-    // delivered: {
-    //   type: DataTypes.BOOLEAN,
-    //   defaultValue: false
-    // },
+    timestamp: DataTypes.DATE,
 
-    // read: {
-    //   type: DataTypes.BOOLEAN,
-    //   defaultValue: false
-    // },
+    text: DataTypes.TEXT,
+
+    error: DataTypes.STRING,
+
+    delivered: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+
+    read: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
 
     message: DataTypes.JSON,
+
+    response: DataTypes.JSON,
     
   }, {
     
