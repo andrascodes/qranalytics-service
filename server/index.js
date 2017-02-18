@@ -10,6 +10,7 @@ const postLoginHandler = require('./routes/login/post')
 const getLoginHandler = require('./routes/login/get')
 const postTrackHandler = require('./routes/track/post')
 const postLogoutHandler = require('./routes/logout/post')
+const putUserHandler = require('./routes/user/put')
 
 const app = express()
 
@@ -26,6 +27,9 @@ app.post('/login', postLoginHandler)
 app.post('/logout', authenticate, postLogoutHandler)
 
 // Track API endpoint, should be authenticated
-app.post('/track', authenticate, postTrackHandler)
+app.post('/track/:direction', authenticate, postTrackHandler)
+
+// User editing API endpoint, should be authenticated
+app.put('/user', authenticate, putUserHandler)
 
 module.exports = app

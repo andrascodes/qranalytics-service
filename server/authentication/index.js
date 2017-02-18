@@ -21,5 +21,5 @@ module.exports = function jwtAuth(req, res, next) {
     req.user = user
     next()
   })
-  .catch(error => res.status(401).send())
+  .catch(error => res.status(401).json({ error: "HTTP 401: Unauthorized"}))
 }
