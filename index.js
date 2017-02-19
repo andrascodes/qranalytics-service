@@ -8,8 +8,8 @@ const db = require('./server/models')
 const PORT = process.env.PORT
 app.set('port', PORT)
 
-//{force: true}
-db.sequelize.sync().then( () => {
+// {force: true}
+db.sequelize.sync({force: true}).then( () => {
 	// START SERVER
 	const server = app.listen(app.get('port'), () =>
     console.log(`Express app is listening at \n${config.serverUrl}`))

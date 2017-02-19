@@ -28,6 +28,8 @@ function postTrackHandler(req, res) {
   .map(msg => extractError(msg))
   .reduce((prev, msg) => msg)
 
+  console.log(`${message.timestamp.getHours()}:${message.timestamp.getMinutes()}: ${message.text}`)
+
   if(message instanceof Error) {
     return res.status(400).json({ error: message.toString() })
   }
@@ -45,7 +47,7 @@ function postTrackHandler(req, res) {
         delivered: true
       }, {
         where: {
-          // userId: user.id,
+          userId: user.get('id'),
           timestamp: {
             $lte: message.timestamp
           },
@@ -75,7 +77,7 @@ function postTrackHandler(req, res) {
         read: true
       }, {
         where: {
-          // userId: user.id,
+          userId: user.get('id'),
           timestamp: {
             $lte: message.timestamp
           },
@@ -95,36 +97,14 @@ function postTrackHandler(req, res) {
       })
     }
     else {
-      // Get the Conversation instance where the current message belongs to
-      // based on message.participant
-      // Delivery, Read and Echo messages don't need a Conversation instance to be logged
-      // 1. Search in memory:
-        // if it's not the first message
-        // get the convoID
-        // Conversation.findOne({ id: convoId })
-      // 2. Create a new convo
-        // Conversation.create()
-        // save convoId in Memory
-      // const conversation = 
-
-      // 1. Receive a message
-      // activeConversations.findConversation(userId, message.participant)
-        // find: convos[userId][participantId]
-          // if found: clearTimeOut and set a New one
-        // return it
-      // if null:
-        // user.createConvo
-        // activeConversations.saveConvo(convo) returns the convo instance
-            // set 30 minutes deletion timeout
-        // convo.createMessage
       
       const conversation = activeConversations.getConversation(user.get('id'), message.participant)
       if(conversation) {
 
         conversation.createAMessage(message)
-        .then(msg => {
-          res.status(200).json({ result: `OK` })
-        })
+        .then(msg => res.status(200).json({ 
+          result: `Message '${message.id}' with type '${message.type}' has been logged` 
+        }))
         .catch(error => {
           console.error(error)
           res.status(500).json({ error: error.toString() })
@@ -141,36 +121,15 @@ function postTrackHandler(req, res) {
           activeConversations.saveConversation(convo)
           return convo.createAMessage(message)
         })
-        .then(msg => {
-          res.status(200).json({ result: `OK` })
-        })
+        .then(msg => res.status(200).json({ 
+          result: `Message '${message.id}' with type '${message.type}' has been logged` 
+        }))
         .catch(error => {
           console.error(error)
           res.status(500).json({ error: error.toString() })
         })
-        
+
       }
-
-      // user.getConversation(message.participant)
-      // .then(convo => {
-      //   // returns a new convo or an existing convo
-      //   return convo.createMessage(message)
-      //   // creates a new Message adds it to the convo instance
-      // })
-      // .then(msg => 
-      //   res.status(200).json({ 
-      //     result: `Message '${msg.id}' with type '${msg.type}' has been logged` 
-      //   })
-      // )
-      // .catch(error => res.status(500).json({ error: message.toString() }))
-
-      // MessageModel.create(message)
-      // .then(msg => {
-      //   // console.log(msg)
-      //   res.status(200).json({ result: `${msg.type} message logged` })
-      // })
-      // .catch(error => res.status(500).json({ error: error.toString() }))
-
     }
   }
   
