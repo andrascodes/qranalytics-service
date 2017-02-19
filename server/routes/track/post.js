@@ -1,6 +1,10 @@
 'use strict';
 
+const uuid = require('node-uuid')
+
 const MessageModel = require('../../models').Message
+
+const activeConversations = require('../../models').activeConversations
 
 const { 
   initMessage, 
@@ -23,18 +27,6 @@ function postTrackHandler(req, res) {
   .map(msg => extractTimestamp(msg))
   .map(msg => extractError(msg))
   .reduce((prev, msg) => msg)
-
-  // Get the Conversation instance where the current message belongs to
-  // based on message.participant
-  // Delivery, Read and Echo messages don't need a Conversation instance to be logged
-  // 1. Search in memory:
-    // if it's not the first message
-    // get the convoID
-    // Conversation.findOne({ id: convoId })
-  // 2. Create a new convo
-    // Conversation.create()
-    // save convoId in Memory
-  // const conversation = 
 
   if(message instanceof Error) {
     return res.status(400).json({ error: message.toString() })
@@ -78,6 +70,7 @@ function postTrackHandler(req, res) {
       // have not been read
       // exchanged between the authenticated user and the partipant
       // Query the messages based on user.id
+
       MessageModel.update({
         read: true
       }, {
@@ -102,14 +95,85 @@ function postTrackHandler(req, res) {
       })
     }
     else {
-      MessageModel.create(message)
-      .then(msg => {
-        // console.log(msg)
-        res.status(200).json({ result: `${msg.type} message logged` })
-      })
-      .catch(error => res.status(500).json({ error: message.toString() }))
+      // Get the Conversation instance where the current message belongs to
+      // based on message.participant
+      // Delivery, Read and Echo messages don't need a Conversation instance to be logged
+      // 1. Search in memory:
+        // if it's not the first message
+        // get the convoID
+        // Conversation.findOne({ id: convoId })
+      // 2. Create a new convo
+        // Conversation.create()
+        // save convoId in Memory
+      // const conversation = 
+
+      // 1. Receive a message
+      // activeConversations.findConversation(userId, message.participant)
+        // find: convos[userId][participantId]
+          // if found: clearTimeOut and set a New one
+        // return it
+      // if null:
+        // user.createConvo
+        // activeConversations.saveConvo(convo) returns the convo instance
+            // set 30 minutes deletion timeout
+        // convo.createMessage
+      
+      const conversation = activeConversations.getConversation(user.get('id'), message.participant)
+      if(conversation) {
+
+        conversation.createAMessage(message)
+        .then(msg => {
+          res.status(200).json({ result: `OK` })
+        })
+        .catch(error => {
+          console.error(error)
+          res.status(500).json({ error: error.toString() })
+        })
+
+      }
+      else {
+
+        user.createConversation({
+          participant: message.participant,
+          startTimestamp: message.timestamp
+        })
+        .then(convo => {
+          activeConversations.saveConversation(convo)
+          return convo.createAMessage(message)
+        })
+        .then(msg => {
+          res.status(200).json({ result: `OK` })
+        })
+        .catch(error => {
+          console.error(error)
+          res.status(500).json({ error: error.toString() })
+        })
+        
+      }
+
+      // user.getConversation(message.participant)
+      // .then(convo => {
+      //   // returns a new convo or an existing convo
+      //   return convo.createMessage(message)
+      //   // creates a new Message adds it to the convo instance
+      // })
+      // .then(msg => 
+      //   res.status(200).json({ 
+      //     result: `Message '${msg.id}' with type '${msg.type}' has been logged` 
+      //   })
+      // )
+      // .catch(error => res.status(500).json({ error: message.toString() }))
+
+      // MessageModel.create(message)
+      // .then(msg => {
+      //   // console.log(msg)
+      //   res.status(200).json({ result: `${msg.type} message logged` })
+      // })
+      // .catch(error => res.status(500).json({ error: error.toString() }))
+
     }
   }
+  
 }
 
 module.exports = postTrackHandler;

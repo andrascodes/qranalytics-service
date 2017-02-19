@@ -138,7 +138,7 @@ module.exports = function User(sequelize, DataTypes) {
       toPublicJSON: function() {
         const { email, createdAt, updatedAt } = this.toJSON();
         return { email, createdAt, updatedAt };
-      }
+      },
 
     },
 
