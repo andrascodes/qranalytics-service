@@ -6,7 +6,7 @@ const _ = require('underscore')
 
 function ConversationArray() {
   // const _thirtyMinutes = 1800000
-  const _thirtyMinutes = 3000
+  const _thirtyMinutes = 30000
   const _conversations = {}
 
   const _endConversation = (userId, participantId) => () => {

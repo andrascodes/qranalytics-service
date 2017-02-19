@@ -8,7 +8,7 @@ const db = require('./server/models')
 const PORT = process.env.PORT
 app.set('port', PORT)
 
-//{force: true}
+// {force: true}
 db.sequelize.sync().then( () => {
 	// START SERVER
 	const server = app.listen(app.get('port'), () =>

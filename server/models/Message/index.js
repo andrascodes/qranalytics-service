@@ -4,8 +4,6 @@
 module.exports = function Message(sequelize, DataTypes) {
   const MessageModel = sequelize.define('message', {   
     // Columns
-    
-    // Should have a userId
 
     participant: DataTypes.STRING,
 
